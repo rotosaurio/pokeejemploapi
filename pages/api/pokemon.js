@@ -8,6 +8,8 @@ export default async function handler(req, res) {
     return;
   }
 
+  const body = req.body;
+  const pokemon = body.pokemon;
 
   const url = `https://pokeapi.co/api/v2/pokemon/${pokemon}`;
   try {
