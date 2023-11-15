@@ -18,6 +18,7 @@ export default function Home() {
       console.log(error);
     }
   };
+  console.log(pokemonData);
   return (
     <>
     <Toaster></Toaster>
@@ -29,6 +30,16 @@ export default function Home() {
         <img src={pokemonData.spriteDefault}></img>
         <h2>Name: {pokemonData.name}</h2>
         <h2>peso: {pokemonData.weight}</h2>
+        <h2>stats base</h2>
+
+        <h2>vida:  {pokemonData.hp} </h2>
+        <h2>daño:  {pokemonData.atck} </h2>
+        <h2>defensa:  {pokemonData.defense} </h2>
+        <h2>ataque especial:  {pokemonData.specialatack} </h2>
+        <h2>defensa especial:  {pokemonData.specialdefense} </h2>
+        <h2>velocidad :  {pokemonData.speed} </h2>
+
+
       </div>
     )}
     </>
