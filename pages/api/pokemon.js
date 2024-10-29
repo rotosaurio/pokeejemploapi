@@ -4,37 +4,43 @@ import axios from "axios";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    res.status(400).json({ error: "This request is not accepted" });
+    res.status(405).json({ error: "Método no permitido" });
     return;
   }
 
-  const body = req.body;
-  const pokemon = body.pokemon;
+  const { pokemon } = req.body;
 
-  const url = `https://pokeapi.co/api/v2/pokemon/${pokemon}`;
+  if (!pokemon) {
+    res.status(400).json({ error: "Se requiere el nombre del Pokémon" });
+    return;
+  }
+
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.toLowerCase()}`);
     const pokeInfo = response.data;
 
-    const { order, stats, sprites } = pokeInfo;
-
     const pokeData = {
-      name: pokemon,
-      weight : pokeInfo.weight,
-      spriteDefault: sprites.front_default,
-      hp : stats[0].base_stat,
-      atck : stats[1].base_stat,
-      defense : stats[2].base_stat,
-      specialatack : stats[3].base_stat,
-      specialdefense : stats[4].base_stat,
-      speed : stats[5].base_stat,
-
+      name: pokeInfo.name,
+      id: pokeInfo.id,
+      weight: pokeInfo.weight,
+      height: pokeInfo.height,
+      spriteDefault: pokeInfo.sprites.front_default,
+      spriteShiny: pokeInfo.sprites.front_shiny,
+      spriteOfficial: pokeInfo.sprites.other['official-artwork'].front_default,
+      hp: pokeInfo.stats[0].base_stat,
+      atck: pokeInfo.stats[1].base_stat,
+      defense: pokeInfo.stats[2].base_stat,
+      specialatack: pokeInfo.stats[3].base_stat,
+      specialdefense: pokeInfo.stats[4].base_stat,
+      speed: pokeInfo.stats[5].base_stat,
+      types: pokeInfo.types.map(type => type.type.name),
+      abilities: pokeInfo.abilities.map(ability => ability.ability.name),
+      baseExperience: pokeInfo.base_experience,
+      moves: pokeInfo.moves.slice(0, 4).map(move => move.move.name)
     };
 
     res.status(200).json(pokeData);
-    console.log(pokeData);
   } catch (error) {
-    console.log(error); 
-    res.status(500).json({ error: error.message });
+    res.status(404).json({ error: "Pokémon no encontrado" });
   }
 }
